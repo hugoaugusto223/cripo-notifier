@@ -25,7 +25,8 @@ local CONFIG = {
             "Los Tortus", "Los Karkeritos", "Los Jobcitos", "Los 67", "La Secret Combinasion",
             "Burguro And Fryuro", "Zombie Tralala", "Vulturino Skeletono", "Frankentteo", "La Vacca Jacko Linterino",
             "Chicleteirina Bicicleteirina", "Eviledon", "La Spooky Grande", "Los Mobilis", "Spooky and Pumpky",
-            "Strawberry Elephant"
+            "Strawberry Elephant", "Meowl", "Mieteteira Bicicleteira", "Rang Ring Bus", "Horegini Boom",
+            "Boatito Auratito"
     },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
