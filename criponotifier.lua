@@ -26,7 +26,7 @@ local CONFIG = {
             "Burguro And Fryuro", "Zombie Tralala", "Vulturino Skeletono", "Frankentteo", "La Vacca Jacko Linterino",
             "Chicleteirina Bicicleteirina", "Eviledon", "La Spooky Grande", "Los Mobilis", "Spooky and Pumpky",
             "Strawberry Elephant", "Meowl", "Mieteteira Bicicleteira", "Rang Ring Bus", "Horegini Boom",
-            "Boatito Auratito"
+            "Boatito Auratito", "Quesadillo Vampiro", "Burrito Bandito", "Chipso and Queso"
     },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
