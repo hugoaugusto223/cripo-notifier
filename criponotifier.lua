@@ -9,7 +9,7 @@ local CONFIG = {
     },
     SEARCH = {
         MIN_GENERATION = 0,
-        local brainrots = {
+        BRAINROT_NAMES = {
             -- Secret Items
             "La Vacca Saturno Saturnita", "Los Tralaleritos", "Graipuss Medussi", "La Grande Combinasion", "Sammyni Spyderini",
             "Garama and Madundung", "Torrtuginni Dragonfrutini", "Las Tralaleritas", "Pot Hotspot", "Nuclearo Dinossauro",
