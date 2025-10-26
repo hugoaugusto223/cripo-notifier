@@ -9,7 +9,8 @@ local CONFIG = {
     },
     SEARCH = {
         MIN_GENERATION = 0,
-        BRAINROT_NAMES = {
+        local brainrots = {
+            -- Secret Items
             "La Vacca Saturno Saturnita", "Los Tralaleritos", "Graipuss Medussi", "La Grande Combinasion", "Sammyni Spyderini",
             "Garama and Madundung", "Torrtuginni Dragonfrutini", "Las Tralaleritas", "Pot Hotspot", "Nuclearo Dinossauro",
             "Las Vaquitas Saturnitas", "Chicleteira Bicicleteira", "Agarrini la Palini", "Los Combinasionas", "Karkerkar Kurkur",
@@ -25,9 +26,14 @@ local CONFIG = {
             "Los Tortus", "Los Karkeritos", "Los Jobcitos", "Los 67", "La Secret Combinasion",
             "Burguro And Fryuro", "Zombie Tralala", "Vulturino Skeletono", "Frankentteo", "La Vacca Jacko Linterino",
             "Chicleteirina Bicicleteirina", "Eviledon", "La Spooky Grande", "Los Mobilis", "Spooky and Pumpky",
-            "Strawberry Elephant", "Meowl", "Mieteteira Bicicleteira", "Rang Ring Bus", "Horegini Boom",
-            "Boatito Auratito", "Quesadillo Vampiro", "Burrito Bandito", "Chipso and Queso"
-    },
+            "Boatito Auratito", "Horegini Boom", "Rang Ring Bus", "Mieteteira Bicicleteira", "Quesadillo Vampiro",
+            "Burrito Bandito", "Chipso and Queso", "Jackorilla", "Pumpkini Spyderini", "Trickolino",
+            "Telemorte", "Pot Pumpkin", "Noo my Candy", "Los Spooky Combinasionas", "La Casa Boo",
+            "Headless Horseman",
+        
+            -- OG Items
+            "Strawberry Elephant", "Meowl"
+        },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
     },
