@@ -1,436 +1,477 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
-repeat task.wait() until game:GetService("Players").LocalPlayer
-
-local CONFIG = {
-    SEARCH = {
-        MIN_GENERATION = 0,
-        BRAINROT_NAMES = {
-            "La Vacca Saturno Saturnita", "Los Tralaleritos", "Graipuss Medussi", "La Grande Combinasion", "Sammyni Spyderini",
-            "Garama and Madundung", "Torrtuginni Dragonfrutini", "Las Tralaleritas", "Pot Hotspot", "Nuclearo Dinossauro",
-            "Las Vaquitas Saturnitas", "Chicleteira Bicicleteira", "Agarrini la Palini", "Los Combinasionas", "Karkerkar Kurkur",
-            "Dragon Cannelloni", "Los Hotspotsitos", "Esok Sekolah", "Nooo My Hotspot", "Los Matteos",
-            "Job Job Job Sahur", "Dul Dul Dul", "Blackhole Goat", "Los Spyderinis", "Ketupat Kepat",
-            "La Supreme Combinasion", "Bisonte Giuppitere", "Guerriro Digitale", "Ketchuru and Musturu", "Spaghetti Tualetti",
-            "Los Nooo My Hotspotsitos", "Trenostruzzo Turbo 4000", "Fragola La La La", "La Sahur Combinasion", "La Karkerkar Combinasion",
-            "Tralaledon", "Los Bros", "Los Chicleteiras", "Chachechi", "Extinct Tralalero",
-            "Extinct Matteo", "67", "Las Sis", "Celularcini Viciosini", "La Extinct Grande",
-            "Quesadilla Crocodila", "Tacorita Bicicleta", "La Cucaracha", "To to to Sahur", "Mariachi Corazoni",
-            "Los Tacoritas", "Tictac Sahur", "Yess my examine", "Karker Sahur", "Noo my examine",
-            "Money Money Puggy", "Los Primos", "Tang Tang Keletang", "Perrito Burrito", "Chillin Chili",
-            "Los Tortus", "Los Karkeritos", "Los Jobcitos", "Los 67", "La Secret Combinasion",
-            "Burguro And Fryuro", "Zombie Tralala", "Vulturino Skeletono", "Frankentteo", "La Vacca Jacko Linterino",
-            "Chicleteirina Bicicleteirina", "Eviledon", "La Spooky Grande", "Los Mobilis", "Spooky and Pumpky",
-            "Boatito Auratito", "Horegini Boom", "Rang Ring Bus", "Mieteteira Bicicleteira", "Quesadillo Vampiro",
-            "Burrito Bandito", "Chipso and Queso", "Jackorilla", "Pumpkini Spyderini", "Trickolino",
-            "Telemorte", "Pot Pumpkin", "Noo my Candy", "Los Spooky Combinasionas", "La Casa Boo",
-            "Headless Horseman", "Strawberry Elephant", "Meowl"
-        },
-        EXCLUDED_NAMES = {"craft", "fusing", "ready"},
-        SMART_FILTER_THRESHOLD = 50000000
-    },
-    NETWORK = {
-        DEBOUNCE_TIME = 0.5,
-        CACHE_DURATION = 5
-    },
-    GRAPHICS = {
-        QUALITY_LEVEL = Enum.QualityLevel.Level01,
-        DISABLE_LIGHTING = true,
-        DISABLE_SOUNDS = true
-    }
-}
-
-local WEBHOOK_URLS = {
-    ["10m"] = "https://discord.com/api/webhooks/1425192989155917857/KApEnVW2TNn3RCcPF-VJQNDyZTshcXWxav_mKXl3LIKleivJTVFOYx9PjVl1lUvzv2cg",
-    ["50m"] = "https://discord.com/api/webhooks/1425192997527621714/AC1q5JRXZcyzLz0CPFWGl6EnYt3dwKj_cl4fCwTJRZidY6G0k1ZuvQoreofd2BP0S0fy",
-    ["100m"] = "https://discord.com/api/webhooks/1425193000954236949/nZNdXypM03Oh7QOSU4nWZJmN-SA3i7jGSvpKuqVVIiEpe2iJ8FFW8FmDKFuXgpyvDdqQ",
-    ["300m"] = "https://discord.com/api/webhooks/1425193003571609723/z-QsxJLU6U4FzUZ5IxK7y2h1RKsFF2ovcc2O9ew_v-WQzlZ7M9Qd8IaHAH5hts9_7Jbi"
-}
-
-local ROLE_MENTIONS = {
-    ["10m"] = "<@&1425222603567530098>",
-    ["50m"] = "<@&1425222834808164412>",
-    ["100m"] = "<@&1425222874087686154>",
-    ["300m"] = "<@&1425222652271923230>"
-}
-
-local IMAGE_MAP = {
-    -- ["los 67"] = "https://cdn.discordapp.com/attachments/xxx/xxx/xxx.webp"
-}
-
-local EVERYONE = 300000000
 
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
-local Lighting = game:GetService("Lighting")
+local HttpService = game:GetService("HttpService")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
 
-local Player = Players.LocalPlayer
-local _plots = Workspace:WaitForChild("Plots")
-local petCache = {}
-local lastRequestTime = {}
 
-local function log(level, message)
-    print(string.format("[%s][%s] %s", os.date("%H:%M:%S"), string.upper(level), tostring(message)))
+local PLACE_ID = 109983668079237
+local CONSUME_URL = "https://tranquil-miracle-js.up.railway.app/consume"
+local CLIENT_ID = "cuzinhoHopper"
+
+
+local THRESHOLD = 1_000_000
+local REPORT_URL = "https://airy-enthusiasm-api.up.railway.app/add"
+local SCAN_INTERVAL = 0.3         
+local SCAN_WARMUP_TIME = 3.0       
+
+
+local BURST_COUNT = 999      
+local BURST_DELAY = 2      
+
+
+local POLL_DELAY_EMPTY = 2
+local TELEPORT_RETRY_DELAY = 0.5
+local TELEPORT_MAX_RETRIES_SAME = 2
+local AUTH_HEADER = nil
+
+
+
+local function getRequest()
+    return (syn and syn.request)
+        or (http and (http.request or http.request_async))
+        or http_request
+        or request
+        or (fluxus and fluxus.request)
+        or (krnl and krnl.request)
+        or nil
+end
+local request = getRequest()
+if not request then
+    warn("[ServerHop] Nenhuma função HTTP do executor encontrada (syn.request/http_request/request/...).")
+    return
 end
 
-local function safeCall(func, errorMessage)
-    local success, result1, result2 = pcall(func)
-    if not success then
-        log("error", errorMessage or "Erro")
-        return nil
-    end
-    if result2 ~= nil then
-        return {result1, result2}
-    end
-    return result1
-end
 
-local ENCODE_MAP = {
-    a="G7Q", b="L2R", c="M8X", d="K5T", e="N9V", f="P3Z", g="Q6B", h="R1F",
-    i="S4J", j="T0M", k="U7C", l="V2G", m="W8K", n="X5N", o="Y9P", p="Z3S",
-    q="A6U", r="B1X", s="C4A", t="D0D", u="E7F", v="F2H", w="H8J", x="I5L",
-    y="J9O", z="K3Q",
-    A="m6Z", B="n1B", C="o4D", D="p0F", E="q7H", F="r2J", G="s8L", H="t5N",
-    I="u9P", J="v3R", K="w6T", L="x1V", M="y4X", N="z0A", O="A7C", P="B2E",
-    Q="C8G", R="D5I", S="E9K", T="F3M", U="G6O", V="H1Q", W="I4S", X="J0U",
-    Y="K7W", Z="L2Y",
-    ["0"]="p7Q", ["1"]="q2R", ["2"]="r8T", ["3"]="s5V", ["4"]="t9X", ["5"]="u3Z",
-    ["6"]="v6B", ["7"]="w1D", ["8"]="x4F", ["9"]="y0H", ["-"]="z7J"
-}
+local function postJson(url, bodyTable)
+    local body = HttpService:JSONEncode(bodyTable or {})
+    local headers = { ["Content-Type"] = "application/json", ["Accept"] = "application/json" }
+    if AUTH_HEADER then headers["Authorization"] = AUTH_HEADER end
 
-local accentMap = {
-    ["á"] = "a", ["à"] = "a", ["ã"] = "a", ["â"] = "a", ["ä"] = "a",
-    ["é"] = "e", ["è"] = "e", ["ê"] = "e", ["ë"] = "e",
-    ["í"] = "i", ["ì"] = "i", ["î"] = "i", ["ï"] = "i",
-    ["ó"] = "o", ["ò"] = "o", ["õ"] = "o", ["ô"] = "o", ["ö"] = "o",
-    ["ú"] = "u", ["ù"] = "u", ["û"] = "u", ["ü"] = "u",
-    ["ç"] = "c", ["ñ"] = "n", ["ý"] = "y", ["ÿ"] = "y"
-}
-
-local function normalizeText(text)
-    if not text then return "" end
-    local normalized = text:lower()
-    for accent, replacement in pairs(accentMap) do
-        normalized = normalized:gsub(accent, replacement)
-    end
-    return normalized:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
-end
-
-local function cleanHtmlTags(text)
-    if not text then return "" end
-    text = string.gsub(text, "<[^>]*>", "")
-    text = string.gsub(text, "%s+", " ")
-    text = string.gsub(text, "^%s*(.-)%s*$", "%1")
-    return text
-end
-
-local function isBrainrotPet(name)
-    if not name then return false end
-    local normalizedName = normalizeText(name)
-    for _, brainrotName in ipairs(CONFIG.SEARCH.BRAINROT_NAMES) do
-        if normalizedName:find(normalizeText(brainrotName), 1, true) then
-            return true
-        end
-    end
-    return false
-end
-
-local function isValidPetName(name)
-    if not name or name == "" then return false end
-    local lowerName = name:lower()
-    for _, excluded in ipairs(CONFIG.SEARCH.EXCLUDED_NAMES) do
-        if lowerName:find(excluded) then
-            return false
-        end
-    end
-    return true
-end
-
-local function isValidGeneration(generation)
-    if not generation or generation == "" then return false end
-    local lowerGen = generation:lower()
-    if lowerGen:find("craft") or lowerGen:find("fus") then return false end
-    if lowerGen:match("%d+m%s+%d+s") or lowerGen:match("%d+s") then return false end
-    return true
-end
-
-local function parseGeneration(genStr)
-    genStr = string.gsub(genStr, "%$", "")
-    genStr = string.gsub(genStr, "/s", "")
-    genStr = string.upper(genStr)
-    local number, suffix = string.match(genStr, "([%d%.]+)([KMB]?)")
-    number = tonumber(number) or 0
-    if suffix == "K" then
-        number = number * 1e3
-    elseif suffix == "M" then
-        number = number * 1e6
-    elseif suffix == "B" then
-        number = number * 1e9
-    end
-    return number
-end
-
-local function determineTier(value)
-    if value >= 10000000 and value < 50000000 then
-        return "10m"
-    elseif value >= 50000000 and value < 100000000 then
-        return "50m"
-    elseif value >= 100000000 and value < 300000000 then
-        return "100m"
-    elseif value >= 300000000 then
-        return "300m"
-    else
-        return nil
-    end
-end
-
-local function getMention(value)
-    local tier = determineTier(value)
-    return ROLE_MENTIONS[tier] or ""
-end
-
-local function getThumbnailUrl(petName)
-    local lowerName = string.lower(petName or "")
-    for imageKey, imageUrl in pairs(IMAGE_MAP) do
-        if string.find(lowerName, string.lower(imageKey), 1, true) then
-            return imageUrl
-        end
-    end
-    return "https://cdn.discordapp.com/attachments/1416974801255399525/1416983746137034793/Unknown.webp?ex=68c8d473&is=68c782f3&hm=7dd12288ae192a42b0e0dd8219eac9e7ee8fc86e44cc12c16d0d6dacdfb87749&"
-end
-
-local function optimizeGraphics()
-    if not CONFIG.GRAPHICS.DISABLE_LIGHTING then return end
-    settings().Rendering.QualityLevel = CONFIG.GRAPHICS.QUALITY_LEVEL
-    Lighting.Brightness = 0
-    Lighting.GlobalShadows = false
-    Lighting.Ambient = Color3.new(0, 0, 0)
-    Lighting.OutdoorAmbient = Color3.new(0, 0, 0)
-    Lighting.FogEnd = 1
-    Lighting.FogStart = 0
-end
-
-local function makeObjectInvisible(object)
-    safeCall(function()
-        if object:IsA("BasePart") then
-            object.Transparency = 1
-            object.CastShadow = false
-        elseif object:IsA("Decal") or object:IsA("Texture") then
-            object.Transparency = 1
-        elseif object:IsA("ParticleEmitter") or object:IsA("Trail") or object:IsA("Beam") then
-            object.Enabled = false
-        elseif object:IsA("Sound") and CONFIG.GRAPHICS.DISABLE_SOUNDS then
-            object.Playing = false
-        end
+    local res
+    local ok, err = pcall(function()
+        res = request({ Url = url, Method = "POST", Headers = headers, Body = body })
     end)
+    if not ok then return nil, "request error: " .. tostring(err) end
+
+    local status = res.StatusCode or res.Status or res.status or 0
+    local text = res.Body or res.body or ""
+    if status == 204 then return "NO_CONTENT", nil end
+    if status >= 200 and status < 300 then
+        if not text or #text == 0 then return nil, "empty body" end
+        local ok2, decoded = pcall(function() return HttpService:JSONDecode(text) end)
+        if ok2 then return decoded, nil else return nil, "json decode error: " .. tostring(decoded) end
+    end
+    return nil, ("HTTP %s: %s"):format(tostring(status), tostring(text))
 end
 
-local function setupGraphicsOptimization()
-    optimizeGraphics()
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        makeObjectInvisible(obj)
-    end
-    Workspace.DescendantAdded:Connect(makeObjectInvisible)
-end
-
-local function collectPetFromOverhead(overhead, genText, displayText)
-    local generationValue = parseGeneration(genText)
-    local brainrotName = displayText
-
-    if not isValidPetName(brainrotName) then 
-        return nil 
-    end
-    if not isValidGeneration(genText) then 
-        return nil 
-    end
-    if not isBrainrotPet(brainrotName) then 
-        return nil 
-    end
-    if generationValue < CONFIG.SEARCH.MIN_GENERATION then 
-        return nil 
-    end
-
-    local petKey = string.format("%s_%s_%s_%s", brainrotName, genText, game.JobId, overhead:GetFullName())
-    local currentTime = tick()
-
-    if petCache[petKey] and (currentTime - petCache[petKey]) < CONFIG.NETWORK.CACHE_DURATION then
-        return nil
-    end
-    petCache[petKey] = currentTime
-    return {
-        name = brainrotName,
-        generation = genText,
-        value = generationValue,
-        uniqueId = overhead:GetFullName()
+local function postWebhook(url, payload)
+    local body = HttpService:JSONEncode(payload or {})
+    local headers = { 
+        ["Content-Type"] = "application/json",
+        ["x-token"] = X_TOKEN
     }
+    local ok, resOrErr = pcall(function()
+        return request({ Url = url, Method = "POST", Headers = headers, Body = body })
+    end)
+    if not ok then
+        warn("[Webhook] Falha de request: ", resOrErr)
+        return false
+    end
+    local status = resOrErr.StatusCode or resOrErr.Status or resOrErr.status or 0
+    local respBody = resOrErr.Body or resOrErr.body or ""
+    if status < 200 or status >= 300 then
+        warn(string.format("[Webhook] HTTP %d: %s", status, respBody))
+        return false
+    end
+    print("[Webhook] Sucesso: ", respBody)
+    return true
 end
 
-local function sendToWebhook(petData)
-    local value = parseGeneration(petData.generation)
-    local tier = determineTier(value)
-    if not tier then return end
 
-    local webhookUrl = WEBHOOK_URLS[tier]
-    if not webhookUrl or webhookUrl == "" then
-        return
+
+local function consumeJob()
+    local decoded, err = postJson(CONSUME_URL, { client = CLIENT_ID })
+    if not decoded and err then
+        warn("[ConsumeJob] Falha HTTP ou JSON: ", err)
+        return nil, err
     end
+    if decoded == "NO_CONTENT" then return nil, nil end
+    if type(decoded) == "table" and decoded.job then
+        return tostring(decoded.job), nil
+    end
+    warn("[ConsumeJob] Resposta inesperada: ", HttpService:JSONEncode(decoded or {}))
+    return nil, "resposta sem campo 'job'"
+end
 
-    local content = getMention(value)
-    local thumbnailUrl = getThumbnailUrl(petData.name)
-    local jobId = game.JobId
 
-    local embed = {
-        ["title"] = "CripoToMan - Notifier",
-        ["type"] = "rich",
-        ["color"] = 62973,
-        ["timestamp"] = os.date("!%Y-%m-%dT%H:%M:%SZ"),
-        ["fields"] = {
-            {["name"] = "\240\159\143\183 Name", ["value"] = "**```"..petData.name.."```**", ["inline"] = true},
-            {["name"] = "\240\159\148\176 Money per second", ["value"] = "**```"..petData.generation.."```**", ["inline"] = true},
-            {["name"] = "\240\159\145\165 Players", ["value"] = "**```"..petData.players.."```**", ["inline"] = true},
-            {["name"] = "Job-ID", ["value"] = "```"..jobId.."```", ["inline"] = false},
-        },
-        ["thumbnail"] = {
-            ["url"] = thumbnailUrl
-        },
-        ["footer"] = {
-            ["text"] = "\194\169 All rights reserved - Cripo."
-        }
-    }
 
-    local payload = {
-        ["content"] = content,
-        ["embeds"] = {embed}
-    }
+local function parseGen(text)
+    text = tostring(text or ""):gsub("[%$,%s]", "")
+    local n, s = text:match("([%d%.]+)%s*([KMBkmb]?)"); n = tonumber(n) or 0; s = (s or ""):upper()
+    if s == "K" then n = n * 1e3 elseif s == "M" then n = n * 1e6 elseif s == "B" then n = n * 1e9 end
+    return n
+end
 
-    local requestFunc = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
-    if requestFunc then
-        requestFunc({
-            Url = webhookUrl,
-            Method = "POST",
-            Headers = {["Content-Type"] = "application/json"},
-            Body = HttpService:JSONEncode(payload)
-        })
+local function getTextLabelText(parent, name)
+    local obj = parent:FindFirstChild(name, true)
+    if obj and obj:IsA("TextLabel") then
+        local t = tostring(obj.Text or ""); if #t > 0 then return t end
     end
 end
 
-local function scanPlots()
-    local playersCount = #Players:GetPlayers()
-    if playersCount >= 8 then return 0 end
+local function getParentStructure(obj)
+    local plots = Workspace:FindFirstChild("Plots")
+    local podiums = Workspace:FindFirstChild("AnimalPodiums")
+    local p = obj
+    while p and p ~= Workspace do
+        if (plots and p.Parent == plots) or (podiums and p.Parent == podiums) then return p end
+        p = p.Parent
+    end
+end
 
-    local collectedPets = {}
+local function normalizeOwnerTextFromSign(t)
+    t = tostring(t or ""):gsub("’", "'")
+    t = t:gsub("^%s+", ""):gsub("%s+$", "")
+    t = t:gsub("^Owner[:%s]+", ""):gsub("^Dono[:%s]+", ""):gsub("^Base[:%s]+", "")
+    t = t:gsub("^Owned by[:%s]+", ""):gsub("^By[:%s]+", "")
+    local before, after = t:match("^(.-)'s%s*(.+)$")
+    if before and after and after:lower():find("^base$") then t = before end
+    return (t:gsub("^%s+", ""):gsub("%s+$", ""))
+end
 
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        if (obj:IsA("SurfaceGui") or obj:IsA("BillboardGui")) and obj.Name == "AnimalOverhead" then
-            local gen = obj:FindFirstChild("Generation")
-            local display = obj:FindFirstChild("DisplayName")
-            local mut = obj:FindFirstChild("Mutation")
+local function displayToUsername(display, base)
+    if not display or display == "" then return nil end
+    display = normalizeOwnerTextFromSign(display)
+    local at = display:match("@([%w_%.]+)"); if at and #at > 0 then return at end
+    local best, bestDist = nil, math.huge
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if (plr.DisplayName or ""):lower() == display:lower() then
+            local dist = math.huge
+            local basePart = (base and base:IsA("Model")) and (base.PrimaryPart or base:FindFirstChild("HumanoidRootPart") or base:FindFirstChildWhichIsA("BasePart", true)) or nil
+            local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+            if basePart and hrp then dist = (hrp.Position - basePart.Position).Magnitude end
+            if dist < bestDist then best, bestDist = plr, dist end
+        end
+    end
+    return best and best.Name or nil
+end
 
-            if gen and gen:IsA("TextLabel") and display and display:IsA("TextLabel") and mut and mut:IsA("TextLabel") then
-                local genText = gen.Text
-                local displayText = display.Text
-                local mutText = mut.Text
-                local generationValue = parseGeneration(genText)
+local function getOwnerFromPlotSign(base)
+    if not base then return nil end
+    local plotSign = base:FindFirstChild("PlotSign", true)
+    if not plotSign then return nil end
+    local direct = {
+        plotSign:FindFirstChild("OwnerName", true),
+        plotSign:FindFirstChild("UserName", true),
+        plotSign:FindFirstChild("PlayerName", true),
+        plotSign:FindFirstChild("Owner", true),
+    }
+    for _, v in ipairs(direct) do
+        if v and v:IsA("StringValue") and v.Value and #v.Value > 0 then
+            local uname = displayToUsername(v.Value, base); if uname then return uname end
+        end
+        if v and v:IsA("ObjectValue") and v.Value and v.Value:IsA("Player") then
+            return v.Value.Name
+        end
+        if v and v:IsA("NumberValue") and tonumber(v.Value) then
+            local ok, name = pcall(Players.GetNameFromUserIdAsync, Players, tonumber(v.Value))
+            if ok and name then return name end
+        end
+    end
+    for _, d in ipairs(plotSign:GetDescendants()) do
+        if d:IsA("TextLabel") then
+            local raw = tostring(d.Text or "")
+            if #raw > 0 and not raw:lower():find("collect") then
+                local uname = displayToUsername(raw, base)
+                if uname then return uname end
+            end
+        end
+    end
+    return nil
+end
 
-                if genText ~= "" and displayText ~= "" and mutText.Text ~= "" and mut.Visible == true then
-                    local cleanMutText = cleanHtmlTags(mutText)
-                    local brainrotName = cleanMutText ~= "Normal" and cleanMutText.." "..displayText or displayText
-                    local pet = collectPetFromOverhead(obj, genText, brainrotName)
-                    if pet then
-                        pet.players = playersCount.."/8"
-                        table.insert(collectedPets, pet)
-                    end
-                elseif genText ~= "" and displayText ~= "" and mut.Visible == false then
-                    local pet = collectPetFromOverhead(obj, genText, displayText)
-                    if pet then
-                        pet.players = playersCount.."/8"
-                        table.insert(collectedPets, pet)
+local function getBaseOwnerName(base)
+    local fromSign = getOwnerFromPlotSign(base)
+    if fromSign and #fromSign > 0 then return fromSign end
+    local cand = { base:FindFirstChild("Owner"), base:FindFirstChild("OwnerName"), base:FindFirstChild("PlotOwner"), base:FindFirstChild("UserName") }
+    for _, v in ipairs(cand) do
+        if v and v:IsA("StringValue") and v.Value and #v.Value > 0 then
+            local uname = displayToUsername(v.Value, base); if uname then return uname end
+            return v.Value
+        end
+        if v and v:IsA("ObjectValue") and v.Value and v.Value:IsA("Player") then return v.Value.Name end
+        if v and v:IsA("NumberValue") and tonumber(v.Value) then
+            local ok, name = pcall(Players.GetNameFromUserIdAsync, Players, tonumber(v.Value))
+            if ok and name then return name end
+            return ("UserId %d"):format(tonumber(v.Value))
+        end
+    end
+    for _, d in ipairs(base:GetDescendants()) do
+        if d:IsA("BillboardGui") or d:IsA("SurfaceGui") then
+            local label = d:FindFirstChildWhichIsA("TextLabel", true)
+            if label and label.Text and #label.Text > 0 and not label.Text:lower():find("collect") then
+                local uname = displayToUsername(label.Text, base)
+                if uname then return uname end
+            end
+        end
+    end
+    return nil
+end
+
+local function collectAllEntries()
+    local roots, list = {}, {}
+    local plots, podiums = Workspace:FindFirstChild("Plots"), Workspace:FindFirstChild("AnimalPodiums")
+    if plots then roots[#roots+1] = plots end
+    if podiums then roots[#roots+1] = podiums end
+    for _, root in ipairs(roots) do
+        for _, gui in ipairs(root:GetDescendants()) do
+            if gui:IsA("BillboardGui") and gui.Name == "AnimalOverhead" then
+                local dn = getTextLabelText(gui, "DisplayName")
+                local gn = getTextLabelText(gui, "Generation")
+                local rr = getTextLabelText(gui, "Rarity")
+                if dn and gn and rr then
+                    local low = gn:lower()
+                    if (not low:find("fusing")) and (not gn:find("%s")) then
+                        local lr = rr:lower()
+                        if lr == "secret" or lr == "og" then
+                            local base = getParentStructure(gui)
+                            list[#list+1] = { gui = gui, name = dn, genText = gn, rarity = rr, value = parseGen(gn), base = base }
+                        end
                     end
                 end
             end
         end
     end
+    return list
+end
 
-    for _, pet in ipairs(collectedPets) do
-        local value = parseGeneration(pet.generation)
-        local tier = determineTier(value)
-        if tier == "10m" or tier == "50m" or tier == "100m" or tier == "300m" then
-            sendToWebhook(pet)
-            task.wait(0.05)
+local function pickBest(entries)
+    local best, val = nil, -math.huge
+    for _, it in ipairs(entries) do
+        if it.value > val then best, val = it, it.value end
+    end
+    return best
+end
+
+local function makeSignature(baseName, items)
+    table.sort(items, function(a, b)
+        if a.value ~= b.value then return a.value > b.value end
+        if a.name == b.name then return a.genText < b.genText end
+        return a.name < b.name
+    end)
+    local parts = { tostring(baseName or "nil") }
+    for _, it in ipairs(items) do parts[#parts+1] = it.name .. "|" .. it.genText end
+    return table.concat(parts, "||")
+end
+
+local function formatNum(n)
+    if n >= 1e9 then return string.format("%.2fB", n / 1e9)
+    elseif n >= 1e6 then return string.format("%.2fM", n / 1e6)
+    elseif n >= 1e3 then return string.format("%.2fK", n / 1e3)
+    else return tostring(math.floor(n)) end
+end
+
+local function sendReport(bestItem, base, items)
+    if not REPORT_URL or REPORT_URL == "" then return end
+
+    local grouped = {}
+    for _, it in ipairs(items) do
+        local key = it.name .. "||" .. it.genText
+        local g = grouped[key]
+        if g then g.count = g.count + 1 else grouped[key] = { name = it.name, genText = it.genText, value = it.value, count = 1 } end
+    end
+    local groups = {}
+    for _, g in pairs(grouped) do groups[#groups+1] = g end
+    table.sort(groups, function(a, b)
+        if a.value ~= b.value then return a.value > b.value end
+        if a.name ~= b.name then return a.name < b.name end
+        return a.genText < b.genText
+    end)
+
+    local title = string.format("%s (%s)", tostring(bestItem.name), tostring(bestItem.genText))
+    local lines = {}
+    for _, g in ipairs(groups) do
+        lines[#lines+1] = string.format("%dx %s (%s)", g.count, tostring(g.name), tostring(g.genText))
+    end
+    local descBlock = "```" .. table.concat(lines, "\n") .. "```"
+
+    local jobId = tostring(game.JobId)
+    local ownerName = getBaseOwnerName(base) or "Unknown"
+    local players = #Players:GetPlayers()
+
+    local payload = {
+        client = CLIENT_ID,
+        jobId = jobId,
+        baseOwner = ownerName,
+        playersOnline = players,
+        category = "DEFAULT",
+        bestItem = { name = bestItem.name, genText = bestItem.genText, value = bestItem.value },
+        
+        items = groups
+    }
+
+    print(string.format("[Scan] enviando report p/ API: melhor %s (%s), itens: %d", tostring(bestItem.name), tostring(bestItem.genText), #items))
+    postWebhook(REPORT_URL, payload)
+end
+
+_G.__BrainrotBaseBatches = _G.__BrainrotBaseBatches or {}
+local sentBatches = _G.__BrainrotBaseBatches
+
+
+local function scanSnapshot()
+    local entries = collectAllEntries()
+    local best = pickBest(entries)
+    if not best or not best.base then
+        return nil
+    end
+    local bucket = {}
+    for _, it in ipairs(entries) do
+        if it.base == best.base and it.value >= THRESHOLD then
+            bucket[#bucket+1] = it
         end
     end
-    return #collectedPets
+    if #bucket == 0 then
+        return { bestItem = best, base = best.base, bucket = bucket, topValue = best.value, found = false }
+    end
+    return { bestItem = best, base = best.base, bucket = bucket, topValue = bucket[1].value or best.value, found = true }
 end
 
--- SERVER HOP CON RETRIES Y LOGICA DE TU EJEMPLO
-local API_URL = "https://api-skidded-skidded.up.railway.app/get-server"
-local PLACE_ID = 109983668079237
-local LocalPlayer = Players.LocalPlayer
-local attempt = 0
 
-local function Parse_JSON(url, method)
-    local requestFunc = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
-    if not requestFunc then return false, nil end
-    local resp = requestFunc({
-        Url = url,
-        Method = method or "GET"
-    })
-    return true, resp
+local function warmupScanAndMaybeNotify()
+    print(string.format("[Scan] warmup iniciado por %.1fs (intervalo %.1fs, threshold >= %s)", SCAN_WARMUP_TIME, SCAN_INTERVAL, formatNum(THRESHOLD)))
+    local tEnd = tick() + SCAN_WARMUP_TIME
+    local bestSeen
+    local iter = 0
+
+    while tick() < tEnd do
+        iter += 1
+        local t0 = os.clock()
+        local snap = scanSnapshot()
+        if snap then
+            if snap.found then
+                print(string.format("[Scan] #%d: base '%s' com %d itens >= threshold (topo: %s %s)",
+                    iter, tostring(snap.base.Name), #snap.bucket, tostring(snap.bestItem.name), tostring(snap.bestItem.genText)))
+            else
+                print(string.format("[Scan] #%d: melhor '%s %s' ~ %s (abaixo do threshold)",
+                    iter, tostring(snap.bestItem.name), tostring(snap.bestItem.genText), formatNum(snap.topValue)))
+            end
+            if not bestSeen or (snap.found and (not bestSeen.found or snap.topValue > bestSeen.topValue)) then
+                bestSeen = snap
+            end
+        else
+            print(string.format("[Scan] #%d: nenhum candidato", iter))
+        end
+
+        local dt = os.clock() - t0
+        local waitFor = math.max(0, SCAN_INTERVAL - dt)
+        task.wait(waitFor)
+    end
+
+    print("[Scan] Warmup concluído.")
+    if bestSeen and bestSeen.found and bestSeen.base and #bestSeen.bucket > 0 then
+        local sig = ("%s|%s"):format(tostring(game.JobId), makeSignature(bestSeen.base.Name, bestSeen.bucket))
+        if not sentBatches[sig] then
+            sentBatches[sig] = true
+            print(string.format("[Scan] Resultado final: enviando embed (itens: %d).", #bestSeen.bucket))
+            sendReport(bestSeen.bestItem, bestSeen.base, bestSeen.bucket)
+        else
+            print("[Scan] resultado final: embed já havia sido enviado para esta assinatura, ignorando.")
+        end
+    else
+        print("[Scan] resultado final: nada >= threshold encontrado no período.")
+    end
 end
 
-Get_JobID = function()
-    while true do
-        attempt += 1
-        local ok, resp = Parse_JSON(API_URL, "GET")
-        local jobId
-        if ok and resp and resp.Body then
-            local success, data = pcall(function()
-                return HttpService:JSONDecode(resp.Body)
-            end)
-            if success and data and data.job_id and data.job_id ~= "" then
-                jobId = data.job_id
+
+
+local function tryTeleportOnce(jobId)
+    local lastFail
+    local conn = TeleportService.TeleportInitFailed:Connect(function(player, result, message)
+        if player == LocalPlayer then
+            lastFail = { result = result, message = tostring(message or "") }
+        end
+    end)
+
+    local ok, err = pcall(function()
+        TeleportService:TeleportToPlaceInstance(PLACE_ID, jobId, LocalPlayer)
+    end)
+
+    task.wait(0.15)
+    conn:Disconnect()
+
+    if not ok then
+        return false, "retry"
+    end
+
+    if lastFail then
+        return false, "retry"
+    end
+
+    return true, "started"
+end
+
+local function attemptTeleport(jobId)
+    local tries = 0
+    while TELEPORT_MAX_RETRIES_SAME == 0 or tries < TELEPORT_MAX_RETRIES_SAME do
+        tries += 1
+        local ok, reason = tryTeleportOnce(jobId)
+        if ok then
+            print(("[ServerHop] Teleport iniciado para %s"):format(jobId))
+            return true
+        end
+        if reason == "switch" then
+            warn(("[ServerHop] servidor cheio/773 em %s -> trocando de job AGORA"):format(jobId))
+            return false, "switch"
+        end
+        warn(("[ServerHop] falha transitória em %s (tentativa %d) -> retry"):format(jobId, tries))
+        task.wait(TELEPORT_RETRY_DELAY)
+    end
+    return false, "retry-limit"
+end
+
+warmupScanAndMaybeNotify()
+
+
+do
+    print(("[Burst] consumindo %d job IDs com intervalo de %ds..."):format(BURST_COUNT, BURST_DELAY))
+    for i = 1, BURST_COUNT do
+        local jobId, err = consumeJob()
+        if err then
+            warn("[Burst] erro ao consumir job: " .. tostring(err))
+        elseif not jobId then
+            print("[Burst] fila vazia (204).")
+        else
+            print(("[Burst] (%d/%d) consumido job: %s -> tentando teleport"):format(i, BURST_COUNT, jobId))
+            local ok, why = attemptTeleport(jobId)
+            if ok then
+                print("[Burst] Teleport iniciado, continuando consumo")
+            else
+                warn(("[Burst] (%d/%d) falha em %s -> próximo após delay"):format(i, BURST_COUNT, jobId))
             end
         end
-        if jobId then
-            print(string.format("[Relay] Got JobID %s on attempt %d", jobId, attempt))
-            return jobId
+        task.wait(BURST_DELAY)
+    end
+    print("[Burst] Lote concluído. Indo para o loop contínuo.")
+end
+
+
+while true do
+    local jobId, err = consumeJob()
+    if err then
+        warn("[ServerHop] erro " .. tostring(err))
+        task.wait(POLL_DELAY_EMPTY)
+    elseif not jobId then
+        task.wait(POLL_DELAY_EMPTY)
+    else
+        print("[ServerHop] job consume:", jobId, " -> tentando teleport")
+        local ok, why = attemptTeleport(jobId)
+        if ok then
+            task.wait(BURST_DELAY)
         else
-            local waitTime = 0.25 + math.random() * 0.5
-            warn(string.format("[Relay] Failed to get JobID on attempt %d, retrying in %.2fs...", attempt, waitTime))
-            task.wait(waitTime)
+            task.wait(BURST_DELAY)
         end
     end
 end
-
-Teleport_To_Server = function()
-    local JobID = Get_JobID() or ""
-    local success, err = pcall(function()
-        TeleportService:TeleportToPlaceInstance(PLACE_ID, JobID, LocalPlayer)
-    end)
-    if success then
-        print(string.format("[Relay] Attempting to teleport to %s (attempt %d)", JobID, attempt))
-        return
-    end
-end
-
-TeleportService.TeleportInitFailed:Connect(function(player, reason)
-    attempt += 1
-    warn(string.format("[Relay] Teleport failed (attempt %d), retrying...", attempt))
-    task.wait(0.3 + math.random() * 0.2)
-    Teleport_To_Server()
-end)
-
-local function mainLoop()
-    log("info", "Notificador iniciado")
-    setupGraphicsOptimization()
-    safeCall(scanPlots, "Erro na varredura")
-    task.wait(2)
-    Teleport_To_Server()
-end
-
-_G.stopNotifier = function()
-    log("info", "Notificador parado")
-end
-
-mainLoop()
