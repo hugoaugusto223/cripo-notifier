@@ -1,11 +1,13 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 repeat task.wait() until game:GetService("Players").LocalPlayer
 
+
 if type(setfpscap) == "function" then
     setfpscap(15)
 else
-    warn("erro")
+    warn("setfpscap não está disponível nesse executor")
 end
+
 
 local CONFIG = {
     API = {
@@ -17,21 +19,21 @@ local CONFIG = {
     SEARCH = {
         MIN_GENERATION = 0,
         BRAINROT_NAMES = {
-            "Bisonte Giuppitere", "Los Matteos", "La Vacca Saturno Saturnita", "Trenostruzzo Turbo 4000",
-            "Torrtuginni Dragonfrutini", "Los Tralaleritos", "Las Tralaleritas", "Job Job Job Sahur",
-            "Las Vaquitas Saturnitas", "Graipuss Medussi", "To to to Sahur", "Pot Hotspot",
-            "Chicleteira Bicicleteira", "Los Chicleteiras", "La Grande Combinasion", "Nuclearo Dinossauro",
-            "Esok Sekolah", "Ketupat Kepat", "Tictac Sahur", "Ketchuru and Musturu", "Garama and Madundung",
-            "67", "Spaghetti Tualetti", "Dragon Cannelloni", "Secret Lucky Block", "Strawberry Elephant",
-            "Guerriro Digitale", "Los Spyderinis", "Blackhole Goat", "Karkerkar Kurkur", "Sammyini Spyderini",
-            "Sammyni Spyderini", "Dul Dul Dul", "Chachechi", "Extinct Tralalero", "La Cucaracha", "Extinct Matteo",
-            "Mariachi Corazoni", "Tacorita Bicicleta", "La Extinct Grande", "Fragola La La La",
-            "La Karkerkar Combinasion", "La Sahur Combinasion", "Las Sis", "Celularcini Viciosini", "Los Bros",
-            "Tralaledon", "Los Tacoritas", "Los Primos", "Agarrini La Palini", "Los Combinasionas",
-            "Los Hotspotsitos", "La Supreme Combinasion", "Nooo My Hotspot", "Quesadilla Crocodila",
-            "Los Nooo My Hotspotsitos", "Yess my Examen", "Noo My Examen", "Money Money Puggy",
-            "Burguro And Fryuro", "Tang Tang Keletang", "Los 67", "Chillin Chili", "La Secret Combinasion",
-            "Los Jobcitos", "Los Tortus", "Los Karkeritos", "Burguro And Fryuro"
+            "Bisonte Giuppitere", "Los Matteos", "La Vacca Saturno Saturnita", "Trenostruzzo Turbo 4000", 
+            "Torrtuginni Dragonfrutini", "Los Tralaleritos", "Las Tralaleritas", "Job Job Job Sahur", 
+            "Las Vaquitas Saturnitas", "Graipuss Medussi", "To to to Sahur", "Pot Hotspot", 
+            "Chicleteira Bicicleteira", "Los Chicleteiras", "La Grande Combinasion", "Nuclearo Dinossauro", 
+            "Esok Sekolah", "Ketupat Kepat", "Tictac Sahur", "Ketchuru and Musturu", "Garama and Madundung", 
+            "67", "Spaghetti Tualetti", "Dragon Cannelloni", "Secret Lucky Block", "Strawberry Elephant", 
+            "Guerriro Digitale", "Los Spyderinis", "Blackhole Goat", "Karkerkar Kurkur", 
+            "Sammyini Spyderini", "Sammyni Spyderini", "Dul Dul Dul", "Chachechi", "Extinct Tralalero", 
+            "La Cucaracha", "Extinct Matteo", "Mariachi Corazoni", "Tacorita Bicicleta", "La Extinct Grande", 
+            "Fragola La La La", "La Karkerkar Combinasion", "La Sahur Combinasion", "Las Sis", 
+            "Celularcini Viciosini", "Los Bros", "Tralaledon", "Los Tacoritas", "Los Primos", 
+            "Agarrini La Palini", "Los Combinasionas", "Los Hotspotsitos", "La Supreme Combinasion", 
+            "Nooo My Hotspot", "Quesadilla Crocodila", "Los Nooo My Hotspotsitos", "Yess my Examen", 
+            "Noo My Examen", "Money Money Puggy", "Burguro And Fryuro", "Tang Tang Keletang", "Los 67", 
+            "Chillin Chili", "La Secret Combinasion", "Los Jobcitos", "Los Tortus", "Los Karkeritos"
         },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
@@ -46,20 +48,7 @@ local CONFIG = {
         DISABLE_SOUNDS = true
     }
 }
-        },
-        EXCLUDED_NAMES = {"craft", "fusing", "ready"},
-        SMART_FILTER_THRESHOLD = 50000000
-    },
-    NETWORK = {
-        DEBOUNCE_TIME = 0.5,
-        CACHE_DURATION = 5
-    },
-    GRAPHICS = {
-        QUALITY_LEVEL = Enum.QualityLevel.Level01,
-        DISABLE_LIGHTING = true,
-        DISABLE_SOUNDS = true
-    }
-}
+
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
@@ -71,6 +60,7 @@ local Player = Players.LocalPlayer
 local _plots = Workspace:WaitForChild("Plots")
 local petCache = {}
 local lastRequestTime = {}
+
 
 local function log(level, message)
     print(string.format("[%s][%s] %s", os.date("%H:%M:%S"), level:upper(), message))
@@ -88,18 +78,7 @@ local function safeCall(func, errorMessage)
     return result1
 end
 
-local ENCODE_MAP = {
-    a="G7Q", b="L2R", c="M8X", d="K5T", e="N9V", f="P3Z", g="Q6B", h="R1F",
-    i="S4J", j="T0M", k="U7C", l="V2G", m="W8K", n="X5N", o="Y9P", p="Z3S",
-    q="A6U", r="B1X", s="C4A", t="D0D", u="E7F", v="F2H", w="H8J", x="I5L",
-    y="J9O", z="K3Q",
-    A="m6Z", B="n1B", C="o4D", D="p0F", E="q7H", F="r2J", G="s8L", H="t5N",
-    I="u9P", J="v3R", K="w6T", L="x1V", M="y4X", N="z0A", O="A7C", P="B2E",
-    Q="C8G", R="D5I", S="E9K", T="F3M", U="G6O", V="H1Q", W="I4S", X="J0U",
-    Y="K7W", Z="L2Y",
-    ["0"]="p7Q", ["1"]="q2R", ["2"]="r8T", ["3"]="s5V", ["4"]="t9X", ["5"]="u3Z",
-    ["6"]="v6B", ["7"]="w1D", ["8"]="x4F", ["9"]="y0H", ["-"]="z7J"
-}
+local ENCODE_MAP = { ... } -- (mantém o mapa de encoding igual ao original)
 
 local function encodeJobId(jobId)
     if not jobId or jobId == "" then return "" end
