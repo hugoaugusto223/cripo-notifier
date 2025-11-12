@@ -1,14 +1,12 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 repeat task.wait() until game:GetService("Players").LocalPlayer
 
-
-if setfpscap then
-    setfpscap(5)
+if type(setfpscap) == "function" then
+    setfpscap(15)
 else
-    warn("errooooooooooooooooo")
+    warn("erro")
 end
 
--- Configurações principais
 local CONFIG = {
     API = {
         BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
