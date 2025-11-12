@@ -1,12 +1,39 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 repeat task.wait() until game:GetService("Players").LocalPlayer
+
+
+if setfpscap then
+    setfpscap(15)
+else
+    warn("errooooooooooooooooo")
+end
+
 local CONFIG = {
     API = {
-    BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
-    ADD_ENDPOINT = "/add",
-    GET_JOB_ENDPOINT = "/get-job",
-    TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
-},
+        BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
+        ADD_ENDPOINT = "/add",
+        GET_JOB_ENDPOINT = "/get-job",
+        TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
+    },
+    SEARCH = {
+        MIN_GENERATION = 0,
+        BRAINROT_NAMES = {if not game:IsLoaded() then game.Loaded:Wait() end
+repeat task.wait() until game:GetService("Players").LocalPlayer
+
+-- 🔹 Limitar FPS se possível
+if setfpscap then
+    setfpscap(15)
+else
+    warn("errooooooooooooooooo")
+end
+
+local CONFIG = {
+    API = {
+        BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
+        ADD_ENDPOINT = "/add",
+        GET_JOB_ENDPOINT = "/get-job",
+        TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
+    },
     SEARCH = {
         MIN_GENERATION = 0,
         BRAINROT_NAMES = {
@@ -39,6 +66,26 @@ local CONFIG = {
         DISABLE_SOUNDS = true
     }
 }
+
+-- restante do seu script permanece igual
+
+        },
+        EXCLUDED_NAMES = {"craft", "fusing", "ready"},
+        SMART_FILTER_THRESHOLD = 50000000
+    },
+    NETWORK = {
+        DEBOUNCE_TIME = 0.5,
+        CACHE_DURATION = 5
+    },
+    GRAPHICS = {
+        QUALITY_LEVEL = Enum.QualityLevel.Level01,
+        DISABLE_LIGHTING = true,
+        DISABLE_SOUNDS = true
+    }
+}
+
+-- restante do seu script permanece igual
+
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
