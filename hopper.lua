@@ -1,52 +1,102 @@
 if not game:IsLoaded() then game.Loaded:Wait() end
 repeat task.wait() until game:GetService("Players").LocalPlayer
 
-
 if type(setfpscap) == "function" then
-    setfpscap(15)
+	setfpscap(15)
 else
-    warn("setfpscap não está disponível nesse executor")
+	warn("setfpscap não está disponível nesse executor")
 end
 
 
 local CONFIG = {
-    API = {
-        BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
-        ADD_ENDPOINT = "/add",
-        GET_JOB_ENDPOINT = "/get-job",
-        TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
-    },
-    SEARCH = {
-        MIN_GENERATION = 0,
-        BRAINROT_NAMES = {
-            "Bisonte Giuppitere", "Los Matteos", "La Vacca Saturno Saturnita", "Trenostruzzo Turbo 4000", 
-            "Torrtuginni Dragonfrutini", "Los Tralaleritos", "Las Tralaleritas", "Job Job Job Sahur", 
-            "Las Vaquitas Saturnitas", "Graipuss Medussi", "To to to Sahur", "Pot Hotspot", 
-            "Chicleteira Bicicleteira", "Los Chicleteiras", "La Grande Combinasion", "Nuclearo Dinossauro", 
-            "Esok Sekolah", "Ketupat Kepat", "Tictac Sahur", "Ketchuru and Musturu", "Garama and Madundung", 
-            "67", "Spaghetti Tualetti", "Dragon Cannelloni", "Secret Lucky Block", "Strawberry Elephant", 
-            "Guerriro Digitale", "Los Spyderinis", "Blackhole Goat", "Karkerkar Kurkur", 
-            "Sammyini Spyderini", "Sammyni Spyderini", "Dul Dul Dul", "Chachechi", "Extinct Tralalero", 
-            "La Cucaracha", "Extinct Matteo", "Mariachi Corazoni", "Tacorita Bicicleta", "La Extinct Grande", 
-            "Fragola La La La", "La Karkerkar Combinasion", "La Sahur Combinasion", "Las Sis", 
-            "Celularcini Viciosini", "Los Bros", "Tralaledon", "Los Tacoritas", "Los Primos", 
-            "Agarrini La Palini", "Los Combinasionas", "Los Hotspotsitos", "La Supreme Combinasion", 
-            "Nooo My Hotspot", "Quesadilla Crocodila", "Los Nooo My Hotspotsitos", "Yess my Examen", 
-            "Noo My Examen", "Money Money Puggy", "Burguro And Fryuro", "Tang Tang Keletang", "Los 67", 
-            "Chillin Chili", "La Secret Combinasion", "Los Jobcitos", "Los Tortus", "Los Karkeritos"
-        },
-        EXCLUDED_NAMES = {"craft", "fusing", "ready"},
-        SMART_FILTER_THRESHOLD = 50000000
-    },
-    NETWORK = {
-        DEBOUNCE_TIME = 0.5,
-        CACHE_DURATION = 5
-    },
-    GRAPHICS = {
-        QUALITY_LEVEL = Enum.QualityLevel.Level01,
-        DISABLE_LIGHTING = true,
-        DISABLE_SOUNDS = true
-    }
+	API = {
+		BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
+		ADD_ENDPOINT = "/add",
+		GET_JOB_ENDPOINT = "/get-job",
+		TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
+	},
+	SEARCH = {
+		MIN_GENERATION = 0,
+		 BRAINROT_NAMES = {
+    "Noobini Pizzanini", "Lirilì Larilà", "Tim Cheese", "Fluriflura",
+    "Svinina Bombardino", "Talpa Di Fero", "Pipi Kiwi", "Pipi Corni",
+    "Raccooni Jandelini", "Tartaragno", "Trippi Troppi", "Gangster Footera",
+    "Boneca Ambalabu", "Ta Ta Ta Ta Sahur", "Tric Trac Baraboom", "Bandito Bobritto",
+    "Cacto Hipopotamo", "Pipi Avocado", "Pinealotto Fruttarino", "Cupcake Koala",
+    "Cappuccino Assassino", "Brr Brr Patapim", "Trulimero Trulicina", "Bananita Dolphinita",
+    "Brri Brri Bicus Dicus Bombicus", "Bambini Crostini", "Perochello Lemonchello", "Avocadini Guffo",
+    "Salamino Penguino", "Ti Ti Ti Sahur", "Penguino Cocosino", "Avocadini Antilopini",
+    "Bandito Axolito", "Malame Amarele", "Mangolini Parrocini", "Mummio Rappitto",
+    "Frogato Pirato", "Wombo Rollo", "Doi Doi Do", "Burbaloni Loliloli",
+    "Chimpanzini Bananini", "Ballerina Cappuccina", "Chef Crabracadabra", "Glorbo Fruttodrillo",
+    "Blueberrinni Octopusini", "Lionel Cactuseli", "Pandaccini Bananini", "Strawberrelli Flamingelli",
+    "Cocosini Mama", "Pi Pi Watermelon", "Sigma Boy", "Pipi Potato",
+    "Quivioli Ameleonni", "Tirilikalika Tirilikalako", "Caramello Filtrello", "Signore Carapace",
+    "Sigma Girl", "Quackula", "Buho de Fuego", "Clickerino Crabo",
+    "Frigo Camelo", "Orangutini Ananassini", "Bombardiro Crocodilo", "Bombombini Gusini",
+    "Rhino Toasterino", "Cavallo Virtuoso", "Spioniro Golubiro", "Zibra Zubra Zibralini",
+    "Tigrilini Watermelini", "Gorillo Watermelondrillo", "Avocadorilla", "Ganganzelli Trulala",
+    "Tob Tobi Tobi", "Te Te Te Sahur", "Tracoducotulu Delapeladustuz", "Lerulerulerule",
+    "Carloo", "Carrotini Brainini", "Brutto Gialutto", "Gorillo Subwoofero",
+    "Los Noobinis", "Rhino Helicopterino", "Elefanto Frigo", "Toiletto Focaccino",
+    "Cachorrito Melonito", "Bananito Bandito", "Magi Ribbitini", "Jacko Spaventosa",
+    "Stoppo Luminino", "Chihuanini Taconini", "Cocofanto Elefanto", "Tralalero Tralala",
+    "Odin Din Din Dun", "Girafa Celestre", "Trenostruzzo Turbo 3000", "Matteo",
+    "Tigroligre Frutonni", "Orcalero Orcala", "Unclito Samito", "Gattatino Nyanino",
+    "Espresso Signora", "Ballerino Lololo", "Piccione Macchina", "Los Crocodillitos",
+    "Tukanno Bananno", "Trippi Troppi Troppa Trippa", "Los Tungtungtungcitos", "Agarrini la Palini",
+    "Bulbito Bandito Traktorito", "Los Orcalitos", "Tipi Topi Taco", "Bombardini Tortinii",
+    "Tralalita Tralala", "Urubini Flamenguini", "Alessio", "Pakrahmatmamat",
+    "Los Bombinitos", "Brr es Teh Patipum", "Tartaruga Cisterna", "Cacasito Satalito",
+    "Mastodontico Telepiedone", "Crabbo Limonetta", "Gattito Tacoto", "Los Tipi Tacos",
+    "Antonio", "Las Capuchinas", "Orcalita Orcala", "Piccionetta Macchina",
+    "Anpali Babel", "Extinct Ballerina", "Tractoro Dinosauro", "Belula Beluga",
+    "Capi Taco", "Dug dug dug", "Corn Corn Corn Sahur", "Brasilini Berimbini",
+    "Squalanana", "Pop Pop Sahur", "Vampira Cappucina", "Jacko Jack Jack",
+    "Snailenzo", "Tentacolo Tecnico", "Pakrahmatmatina", "Bambu Bambu Sahur",
+    "Krupuk Pagi Pagi", "Mummy Ambalabu", "Cappuccino Clownino", "Skull Skull Skull",
+    "Aquanaut", "Frio Ninja", "Money Money Man", "Noo La Polizia",
+    "La Vacca Saturno Saturnita", "Los Tralaleritos", "Graipuss Medussi", "La Grande Combinasion",
+    "Sammyni Spyderini", "Garama and Madundung", "Torrtuginni Dragonfrutini", "Las Tralaleritas",
+    "Pot Hotspot", "Nuclearo Dinossauro", "Las Vaquitas Saturnitas", "Chicleteira Bicicleteira",
+    "Agarrini la Palini", "Los Combinasionas", "Karkerkar Kurkur", "Dragon Cannelloni",
+    "Los Hotspotsitos", "Esok Sekolah", "Nooo My Hotspot", "Los Matteos",
+    "Job Job Job Sahur", "Dul Dul Dul", "Blackhole Goat", "Los Spyderinis",
+    "Ketupat Kepat", "La Supreme Combinasion", "Bisonte Giuppitere", "Guerriro Digitale",
+    "Ketchuru and Musturu", "Spaghetti Tualetti", "Los Nooo My Hotspotsitos", "Trenostruzzo Turbo 4000",
+    "Fragola La La La", "La Sahur Combinasion", "La Karkerkar Combinasion", "Tralaledon",
+    "Los Bros", "Los Chicleteiras", "Chachechi", "Extinct Tralalero",
+    "Extinct Matteo", "67", "Las Sis", "Celularcini Viciosini",
+    "La Extinct Grande", "Quesadilla Crocodila", "Tacorita Bicicleta", "La Cucaracha",
+    "To to to Sahur", "Mariachi Corazoni", "Los Tacoritas", "Tictac Sahur",
+    "Yess my examine", "Karker Sahur", "Noo my examine", "Money Money Puggy",
+    "Los Primos", "Tang Tang Keletang", "Perrito Burrito", "Chillin Chili",
+    "Los Tortus", "Los Karkeritos", "Los Jobcitos", "Los 67",
+    "La Secret Combinasion", "Burguro And Fryuro", "Zombie Tralala", "Vulturino Skeletono",
+    "Frankentteo", "La Vacca Jacko Linterino", "Chicleteirina Bicicleteirina", "Eviledon",
+    "La Spooky Grande", "Los Mobilis", "Spooky and Pumpky", "Boatito Auratito",
+    "Horegini Boom", "Rang Ring Bus", "Mieteteira Bicicleteira", "Quesadillo Vampiro",
+    "Burrito Bandito", "Chipso and Queso", "Jackorilla", "Pumpkini Spyderini",
+    "Trickolino", "Telemorte", "Pot Pumpkin", "Noo my Candy",
+    "Los Spooky Combinasionas", "La Casa Boo", "Headless Horseman", "La Taco Combinasion",
+    "1x1x1x1", "Capitano Moby", "Guest 666", "Pirulitoita Bicicleteira",
+    "Los Puggies", "Los Spaghettis", "Fragrama and Chocrama", "Strawberry Elephant",
+    "Meowl", "Mythic Lucky Block", "Brainrot God Lucky Block", "Secret Lucky Block",
+    "Admin Lucky Block", "Taco Lucky Block", "Los Lucky Blocks", "Spooky Lucky Block"
+},
+
+		EXCLUDED_NAMES = {"craft", "fusing", "ready"},
+		SMART_FILTER_THRESHOLD = 50000000
+	},
+	NETWORK = {
+		DEBOUNCE_TIME = 0.2,
+		CACHE_DURATION = 1
+	},
+	GRAPHICS = {
+		QUALITY_LEVEL = Enum.QualityLevel.Level01,
+		DISABLE_LIGHTING = true,
+		DISABLE_SOUNDS = true
+	}
 }
 
 
@@ -62,407 +112,209 @@ local petCache = {}
 local lastRequestTime = {}
 
 
-local function log(level, message)
-    print(string.format("[%s][%s] %s", os.date("%H:%M:%S"), level:upper(), message))
+local function log(level, msg)
+	print(string.format("[%s][%s] %s", os.date("%H:%M:%S"), level:upper(), msg))
 end
 
-local function safeCall(func, errorMessage)
-    local success, result1, result2 = pcall(func)
-    if not success then
-        log("error", errorMessage or "Erro")
-        return nil
-    end
-    if result2 ~= nil then
-        return {result1, result2}
-    end
-    return result1
+local function safeCall(func, msg)
+	local ok, res = pcall(func)
+	if not ok then log("error", msg or res) end
+	return ok and res or nil
 end
 
-local ENCODE_MAP = { ... } -- (mantém o mapa de encoding igual ao original)
-
-local function encodeJobId(jobId)
-    if not jobId or jobId == "" then return "" end
-    local encoded = {}
-    for i = 1, #jobId do
-        local char = jobId:sub(i, i)
-        table.insert(encoded, ENCODE_MAP[char] or "???")
-    end
-    return table.concat(encoded)
+local function parseValue(str)
+	if not str or str == "" then return 0 end
+	local n, s = str:match("([%d%.]+)([KMB]?)")
+	local m = {K = 1e3, M = 1e6, B = 1e9}
+	return (tonumber(n) or 0) * (m[s] or 1)
 end
 
-local function parseValue(valueStr)
-    if not valueStr or valueStr == "" then return 0 end
-    local number, suffix = valueStr:match("([%d%.]+)([KMB]?)")
-    if not number then return 0 end
-    local multipliers = {K = 1e3, M = 1e6, B = 1e9}
-    return (tonumber(number) or 0) * (multipliers[suffix] or 1)
+
+local function getHttpRequestFunction()
+	return http_request or request or (syn and syn.request)
+		or (fluxus and fluxus.request) or (http and http.request)
+end
+
+local function makeRequest(cfg)
+	local r = getHttpRequestFunction()
+	if not r then return nil end
+	local ok, res = pcall(function() return r(cfg) end)
+	return ok and res or nil
 end
 
 local function optimizeGraphics()
-    if not CONFIG.GRAPHICS.DISABLE_LIGHTING then return end
-    settings().Rendering.QualityLevel = CONFIG.GRAPHICS.QUALITY_LEVEL
-    Lighting.Brightness = 0
-    Lighting.GlobalShadows = false
-    Lighting.Ambient = Color3.new(0, 0, 0)
-    Lighting.OutdoorAmbient = Color3.new(0, 0, 0)
-    Lighting.FogEnd = 1
-    Lighting.FogStart = 0
+	if not CONFIG.GRAPHICS.DISABLE_LIGHTING then return end
+	settings().Rendering.QualityLevel = CONFIG.GRAPHICS.QUALITY_LEVEL
+	Lighting.GlobalShadows = false
+	Lighting.Brightness = 0
+	Lighting.Ambient = Color3.new(0, 0, 0)
 end
 
-local function makeObjectInvisible(object)
-    safeCall(function()
-        if object:IsA("BasePart") then
-            object.Transparency = 1
-            object.CastShadow = false
-        elseif object:IsA("Decal") or object:IsA("Texture") then
-            object.Transparency = 1
-        elseif object:IsA("ParticleEmitter") or object:IsA("Trail") or object:IsA("Beam") then
-            object.Enabled = false
-        elseif object:IsA("Sound") and CONFIG.GRAPHICS.DISABLE_SOUNDS then
-            object.Playing = false
-        end
-    end)
+local function makeInvisible(obj)
+	safeCall(function()
+		if obj:IsA("BasePart") then
+			obj.Transparency = 1
+			obj.CastShadow = false
+		elseif obj:IsA("Decal") or obj:IsA("Texture") then
+			obj.Transparency = 1
+		elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Beam") then
+			obj.Enabled = false
+		elseif obj:IsA("Sound") and CONFIG.GRAPHICS.DISABLE_SOUNDS then
+			obj.Playing = false
+		end
+	end)
 end
 
-local function setupGraphicsOptimization()
-    optimizeGraphics()
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        makeObjectInvisible(obj)
-    end
-    Workspace.DescendantAdded:Connect(makeObjectInvisible)
-end
-
-local function getHttpRequestFunction()
-    return http_request or request or 
-           (syn and syn.request) or 
-           (fluxus and fluxus.request) or 
-           (http and http.request)
-end
-
-local function makeRequest(config)
-    local requestFunc = getHttpRequestFunction()
-    if not requestFunc then return nil end
-    local success, response = pcall(function()
-        return requestFunc(config)
-    end)
-    return success and response or nil
-end
-
-local function sendPetNotification(name, generation, jobId, uniqueId)
-    local currentTime = tick()
-    local petKey = string.format("%s_%s_%s", name, generation, uniqueId or "")
-    
-    if lastRequestTime[petKey] and (currentTime - lastRequestTime[petKey]) < CONFIG.NETWORK.DEBOUNCE_TIME then
-        return false
-    end
-    lastRequestTime[petKey] = currentTime
-    
-    local encodedJobId = encodeJobId(jobId)
-    local finalJobId = "LABSHUB_" .. encodedJobId
-    local playersCount = #Players:GetPlayers()
-    
-    local payload = {
-        name = name,
-        generation = generation,
-        job_id = finalJobId,
-        players = playersCount .. "/8",
-        timer = os.date("%d/%m/%Y %H:%M:%S")
-    }
-    
-    local requestConfig = {
-        Url = CONFIG.API.BASE_URL .. CONFIG.API.ADD_ENDPOINT,
-        Method = "POST",
-        Headers = {
-            ["Content-Type"] = "application/json",
-            ["x-token"] = CONFIG.API.TOKEN
-        },
-        Body = HttpService:JSONEncode(payload)
-    }
-    
-    local response = makeRequest(requestConfig)
-    if response then
-        local statusCode = response.StatusCode or response.status or 200
-        if statusCode >= 200 and statusCode < 300 then
-            log("success", string.format("✓ %s [%s]", name, generation))
-            return statusCode
-        end
-        return statusCode
-    end
-    return 0
-end
-
-local function serverHop()
-    local attemptCount = 0
-    local MAX_ATTEMPTS = 30
-    
-    while true do
-        attemptCount = attemptCount + 1
-        
-        if attemptCount >= MAX_ATTEMPTS then
-            game:Shutdown()
-            return
-        end
-        
-        local requestFunc = getHttpRequestFunction()
-        if requestFunc then
-            local requestConfig = {
-                Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
-                Method = "GET",
-                Headers = {["x-token"] = CONFIG.API.TOKEN}
-            }
-            
-            local response = requestFunc(requestConfig)
-            
-            if response and response.Body then
-                local data = HttpService:JSONDecode(response.Body)
-                if data and data.job_id then
-                    pcall(function()
-                        TeleportService:TeleportToPlaceInstance(game.PlaceId, data.job_id, Player)
-                    end)
-                end
-            end
-        end
-        task.wait(0.5)
-    end
+local function setupGraphics()
+	optimizeGraphics()
+	for _, o in pairs(Workspace:GetDescendants()) do makeInvisible(o) end
+	Workspace.DescendantAdded:Connect(makeInvisible)
 end
 
 
-local function isValidPetName(name)
-    if not name or name == "" then return false end
-    local lowerName = name:lower()
-    for _, excluded in ipairs(CONFIG.SEARCH.EXCLUDED_NAMES) do
-        if lowerName:find(excluded) then
-            return false
-        end
-    end
-    return true
+local accentMap = { ["á"]="a",["ã"]="a",["â"]="a",["é"]="e",["ê"]="e",["í"]="i",["ó"]="o",["ô"]="o",["õ"]="o",["ú"]="u",["ç"]="c" }
+
+local function normalizeText(txt)
+	txt = txt:lower()
+	for a, r in pairs(accentMap) do txt = txt:gsub(a, r) end
+	return txt
 end
 
-local function isValidGeneration(generation)
-    if not generation or generation == "" then return false end
-    local lowerGen = generation:lower()
-    if lowerGen:find("craft") or lowerGen:find("fus") then return false end
-    if lowerGen:match("%d+m%s+%d+s") or lowerGen:match("%d+s") then return false end
-    return true
-end
-
-local accentMap = {
-    ["á"] = "a", ["à"] = "a", ["ã"] = "a", ["â"] = "a", ["ä"] = "a",
-    ["é"] = "e", ["è"] = "e", ["ê"] = "e", ["ë"] = "e",
-    ["í"] = "i", ["ì"] = "i", ["î"] = "i", ["ï"] = "i",
-    ["ó"] = "o", ["ò"] = "o", ["õ"] = "o", ["ô"] = "o", ["ö"] = "o",
-    ["ú"] = "u", ["ù"] = "u", ["û"] = "u", ["ü"] = "u",
-    ["ç"] = "c", ["ñ"] = "n", ["ý"] = "y", ["ÿ"] = "y"
-}
-
-local function normalizeText(text)
-    if not text then return "" end
-    local normalized = text:lower()
-    for accent, replacement in pairs(accentMap) do
-        normalized = normalized:gsub(accent, replacement)
-    end
-    return normalized:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
-end
-
-local function cleanHtmlTags(text)
-    if not text then return "" end
-    -- Remove todas as tags HTML
-    text = string.gsub(text, "<[^>]*>", "")
-    -- Remove espaços extras
-    text = string.gsub(text, "%s+", " ")
-    -- Remove espaços no início e fim
-    text = string.gsub(text, "^%s*(.-)%s*$", "%1")
-    return text
+local function cleanHtmlTags(t)
+	return (t or ""):gsub("<[^>]*>", ""):gsub("%s+", " "):gsub("^%s*(.-)%s*$", "%1")
 end
 
 local function isBrainrotPet(name)
-    if not name then return false end
-
-    local normalizedName = normalizeText(name)
-
-    for _, brainrotName in ipairs(CONFIG.SEARCH.BRAINROT_NAMES) do
-        if normalizedName:find(normalizeText(brainrotName), 1, true) then
-            return true
-        end
-    end
-
-    return false
+	if not name then return false end
+	local n = normalizeText(name)
+	for _, b in ipairs(CONFIG.SEARCH.BRAINROT_NAMES) do
+		if n:find(normalizeText(b), 1, true) then return true end
+	end
+	return false
 end
 
-local function collectPetFromOverhead(overhead, genText, displayText)
-    local generationValue = parseValue(genText)
-    local brainrotName = displayText
-    
-    if not isValidPetName(brainrotName) then 
-        return nil 
-    end
-    if not isValidGeneration(genText) then 
-        return nil 
-    end
-    if not isBrainrotPet(brainrotName) then 
-        return nil 
-    end
-    if generationValue < CONFIG.SEARCH.MIN_GENERATION then 
-        return nil 
-    end
-    
-    local petKey = string.format("%s_%s_%s_%s", brainrotName, genText, game.JobId, overhead:GetFullName())
-    local currentTime = tick()
-    
-    if petCache[petKey] and (currentTime - petCache[petKey]) < CONFIG.NETWORK.CACHE_DURATION then
-        return nil
-    end
-    petCache[petKey] = currentTime
-    return {
-        name = brainrotName,
-        generation = genText,
-        value = generationValue,
-        uniqueId = overhead:GetFullName()
-    }
+
+local function sendPetNotification(name, generation, jobId, uniqueId)
+	local now = tick()
+	local key = string.format("%s_%s_%s", name, generation, uniqueId or "")
+	if lastRequestTime[key] and (now - lastRequestTime[key]) < CONFIG.NETWORK.DEBOUNCE_TIME then
+		return false
+	end
+	lastRequestTime[key] = now
+
+	local payload = {
+		name = name,
+		generation = generation,
+		job_id = jobId, 
+		players = #Players:GetPlayers() .. "/8",
+		timer = os.date("%d/%m/%Y %H:%M:%S")
+	}
+
+	local res = makeRequest({
+		Url = CONFIG.API.BASE_URL .. CONFIG.API.ADD_ENDPOINT,
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json",
+			["x-token"] = CONFIG.API.TOKEN
+		},
+		Body = HttpService:JSONEncode(payload)
+	})
+
+	if res and (res.StatusCode or res.status or 0) < 300 then
+		log("success", "✓ " .. name .. " [" .. generation .. "]")
+		return true
+	end
+	return false
+end
+
+
+local function collectPet(overhead, genText, displayText)
+	local value = parseValue(genText)
+	if value < CONFIG.SEARCH.MIN_GENERATION then return nil end
+	if not isBrainrotPet(displayText) then return nil end
+
+	local key = string.format("%s_%s_%s", displayText, genText, overhead:GetFullName())
+	local now = tick()
+	if petCache[key] and (now - petCache[key]) < CONFIG.NETWORK.CACHE_DURATION then return nil end
+	petCache[key] = now
+
+	return { name = displayText, generation = genText, uniqueId = overhead:GetFullName(), value = value }
 end
 
 local function scanPlots()
-    local playersCount = #Players:GetPlayers()
-    if playersCount >= 8 then return 0 end
-    
-    local collectedPets = {}
+    local pets = {}
+    local now = tick()
+
     
     for _, obj in pairs(Workspace:GetDescendants()) do
-        if (obj:IsA("SurfaceGui") or obj:IsA("BillboardGui")) and obj.Name == "AnimalOverhead" then
+        if obj.Name == "AnimalOverhead" and (obj:IsA("BillboardGui") or obj:IsA("SurfaceGui")) then
             local gen = obj:FindFirstChild("Generation")
-            local display = obj:FindFirstChild("DisplayName")
-            local mut = obj:FindFirstChild("Mutation")
-            
-            if gen and gen:IsA("TextLabel") and display and display:IsA("TextLabel") and mut and mut:IsA("TextLabel") then
-                local genText = gen.Text
-                local displayText = display.Text
-                local mutText = mut.Text
-                local generationValue = parseValue(genText)
-                
-                
-                if genText ~= "" and displayText ~= "" and mutText.Text ~= "" and mut.Visible == true then
-                    -- Limpar HTML do texto da mutação
-                    local cleanMutText = cleanHtmlTags(mutText)
-                    local generationValue = parseValue(genText)
-                    
-                    
-                    -- Se tem mutação, verificar se não é "Normal"
-                    if cleanMutText ~= "Normal" and cleanMutText ~= "" then
-                        -- Se não é Normal, combinar mutText + " " + displayText
-                        local brainrotName = cleanMutText .. " " .. displayText
-                        local pet = collectPetFromOverhead(obj, genText, brainrotName)
-                        if pet then
-                            table.insert(collectedPets, pet)
+            local disp = obj:FindFirstChild("DisplayName")
+            if gen and disp and gen:IsA("TextLabel") and disp:IsA("TextLabel") then
+                local genText, dispText = gen.Text, disp.Text
+                if genText ~= "" and dispText ~= "" then
+                    local val = parseValue(genText)
+                    if isBrainrotPet(dispText) and val >= CONFIG.SEARCH.MIN_GENERATION then
+                        local key = string.format("%s_%s_%s_%s", dispText, genText, game.JobId, obj:GetFullName())
+                        if not petCache[key] or (now - petCache[key]) >= CONFIG.NETWORK.CACHE_DURATION then
+                            petCache[key] = now
+                            table.insert(pets, {
+                                name = dispText,
+                                generation = genText,
+                                value = val,
+                                uniqueId = obj:GetFullName()
+                            })
                         end
-                    else
-                        -- Se é Normal ou vazio, usar apenas displayText
-                        local pet = collectPetFromOverhead(obj, genText, displayText)
-                        if pet then
-                            table.insert(collectedPets, pet)
-                        end
-                    end
-                elseif
-                    genText ~= "" and displayText ~= "" and mut.Visible == false then
-                    local generationValue = parseValue(genText)
-                    -- Sem mutação, usar apenas displayText
-                    local pet = collectPetFromOverhead(obj, genText, displayText)
-                    if pet then
-                        table.insert(collectedPets, pet)
                     end
                 end
             end
         end
     end
-    
-    if #collectedPets == 0 then return 0 end
-    
-    local hasHighValuePets = false
-    local threshold = CONFIG.SEARCH.SMART_FILTER_THRESHOLD
-    
-    for _, pet in ipairs(collectedPets) do
-        if pet.value >= threshold then
-            hasHighValuePets = true
-            break
-        end
-    end
-    
-    local petsToSend = {}
-    if hasHighValuePets then
-        for _, pet in ipairs(collectedPets) do
-            if pet.value >= threshold then
-                table.insert(petsToSend, pet)
+
+ 
+    local sent = 0
+    for _, pet in ipairs(pets) do
+        task.spawn(function()
+            local s = sendPetNotification(pet.name, pet.generation, game.JobId, pet.uniqueId)
+            if s >= 200 and s < 300 then
+                sent += 1
             end
-        end
-    else
-        petsToSend = collectedPets
+        end)
     end
-    
-    local sentCount = 0
-    local allStatusCodes = {}
-    
-    for i, pet in ipairs(petsToSend) do
-        local statusCode = sendPetNotification(pet.name, pet.generation, game.JobId, pet.uniqueId)
-        table.insert(allStatusCodes, statusCode)
-        if statusCode >= 200 and statusCode < 300 then
-            sentCount = sentCount + 1
-        end
-        if i < #petsToSend then
-            task.wait(0.01)
-        end
-    end
-    
-    return sentCount, allStatusCodes
+
+    return sent
 end
 
-local function mainLoop()
-    log("info", "Notificador iniciado")
-    setupGraphicsOptimization()
-    
-    local result = safeCall(function()
-        return scanPlots()
-    end, "Erro na varredura")
-    
-    local found, statusCodes
-    if result then
-        if type(result) == "table" and result[1] and result[2] then
-            found = result[1]
-            statusCodes = result[2]
-        else
-            found = result
-            statusCodes = {}
-        end
-    else
-        found = 0
-        statusCodes = {}
-    end
-    
-    if found and found > 0 then
-        local allRequestsSuccessful = true
-        if statusCodes and #statusCodes > 0 then
-            for _, statusCode in ipairs(statusCodes) do
-                if statusCode < 200 or statusCode >= 300 then
-                    allRequestsSuccessful = false
-                    break
-                end
-            end
-        else
-            allRequestsSuccessful = false
-        end
-        if allRequestsSuccessful then
-            log("info", string.format("%d pets notificados - aguardando 2s...", found))
-            task.wait(2)
-            safeCall(serverHop, "Erro no server hop")
-        else
-            safeCall(serverHop, "Erro no server hop")
-        end
-    else
-        safeCall(serverHop, "Erro no server hop")
-    end
 
+local function serverHop()
+	local r = getHttpRequestFunction()
+	if not r then return end
+	local res = r({
+		Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
+		Method = "GET",
+		Headers = { ["x-token"] = CONFIG.API.TOKEN }
+	})
+	if res and res.Body then
+		local data = HttpService:JSONDecode(res.Body)
+		if data and data.job_id then
+			pcall(function()
+				TeleportService:TeleportToPlaceInstance(game.PlaceId, data.job_id, Player)
+			end)
+		end
+	end
 end
 
-_G.stopNotifier = function()
-    log("info", "Notificador parado")
+
+local function main()
+	log("info", "iniciando scan")
+	setupGraphics()
+
+	local found = safeCall(scanPlots, "erro no scan") or 0
+	if found > 0 then
+		log("info", "1s antes de hoppar")
+		task.wait(1)
+	end
+	safeCall(serverHop, "Erro no server hop")
 end
 
-mainLoop()
+main()
