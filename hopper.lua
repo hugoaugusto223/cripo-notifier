@@ -288,21 +288,57 @@ end
 
 local function serverHop()
 	local r = getHttpRequestFunction()
-	if not r then return end
-	local res = r({
-		Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
-		Method = "GET",
-		Headers = { ["x-token"] = CONFIG.API.TOKEN }
-	})
-	if res and res.Body then
-		local data = HttpService:JSONDecode(res.Body)
-		if data and data.job_id then
-			pcall(function()
-				TeleportService:TeleportToPlaceInstance(game.PlaceId, data.job_id, Player)
-			end)
-		end
+	if not r then 
+		log("error", "nenhum http disponivel (executor incompatível)")
+		return 
 	end
+
+	local maxRetries = 30
+	local retryDelay = 0.5
+
+	for attempt = 1, maxRetries do
+		local success, res = pcall(function()
+			return r({
+				Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
+				Method = "GET",
+				Headers = { ["x-token"] = CONFIG.API.TOKEN }
+			})
+		end)
+
+		if success and res and res.Body then
+			local ok, data = pcall(function()
+				return HttpService:JSONDecode(res.Body)
+			end)
+
+			if ok and data and typeof(data.job_id) == "string" and #data.job_id > 10 then
+				local jobId = data.job_id
+				log("info", string.format("tentando teleportar (%d/%d): %s", attempt, maxRetries, jobId))
+
+				local tpSuccess, tpErr = pcall(function()
+					task.wait(1)
+					TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, Player)
+				end)
+
+				if tpSuccess then
+					log("success", "teleportando para job " .. jobId)
+					return
+				else
+					log("warn", "falha no teleport (" .. tostring(tpErr) .. ") — tentando outro servidor...")
+				end
+			else
+				log("error", "job invalid (tentativa " .. attempt .. ")")
+			end
+		else
+			log("error", "falha (tentativa " .. attempt .. ")")
+		end
+
+		task.wait(retryDelay)
+	end
+
+	log("error", "n foi possivel " .. maxRetries .. " tentativas.")
 end
+
+
 
 
 local function main()
@@ -314,7 +350,7 @@ local function main()
 		log("info", "1s antes de hoppar")
 		task.wait(1)
 	end
-	safeCall(serverHop, "Erro no server hop")
+	safeCall(serverHop, "erro no server hop")
 end
 
 main()
