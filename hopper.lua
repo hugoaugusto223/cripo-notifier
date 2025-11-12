@@ -3,30 +3,12 @@ repeat task.wait() until game:GetService("Players").LocalPlayer
 
 
 if setfpscap then
-    setfpscap(15)
+    setfpscap(5)
 else
     warn("errooooooooooooooooo")
 end
 
-local CONFIG = {
-    API = {
-        BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
-        ADD_ENDPOINT = "/add",
-        GET_JOB_ENDPOINT = "/get-job",
-        TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
-    },
-    SEARCH = {
-        MIN_GENERATION = 0,
-        BRAINROT_NAMES = {if not game:IsLoaded() then game.Loaded:Wait() end
-repeat task.wait() until game:GetService("Players").LocalPlayer
-
--- 🔹 Limitar FPS se possível
-if setfpscap then
-    setfpscap(15)
-else
-    warn("errooooooooooooooooo")
-end
-
+-- Configurações principais
 local CONFIG = {
     API = {
         BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
@@ -37,21 +19,21 @@ local CONFIG = {
     SEARCH = {
         MIN_GENERATION = 0,
         BRAINROT_NAMES = {
-            "Bisonte Giuppitere", "Los Matteos", "La Vacca Saturno Saturnita", "Trenostruzzo Turbo 4000", "Torrtuginni Dragonfrutini",
-            "Los Tralaleritos", "Las Tralaleritas", "Job Job Job Sahur", "Las Vaquitas Saturnitas", "Graipuss Medussi",
-            "To to to Sahur", "Pot Hotspot", "Chicleteira Bicicleteira", "Los Chicleteiras", "La Grande Combinasion",
-            "Nuclearo Dinossauro", "Esok Sekolah",
-            "Ketupat Kepat", "Tictac Sahur", "Ketchuru and Musturu", "Garama and Madundung", "67",
-            "Spaghetti Tualetti", "Dragon Cannelloni", "Secret Lucky Block", "Strawberry Elephant",
-            "Guerriro Digitale", "Los Spyderinis", "Blackhole Goat", "Karkerkar Kurkur", "Sammyini Spyderini", "Sammyni Spyderini",
-            "Dul Dul Dul", "Chachechi", "Extinct Tralalero", "La Cucaracha", "Extinct Matteo",
-            "Mariachi Corazoni", "Tacorita Bicicleta", "La Extinct Grande",
-            "Fragola La La La", "La Karkerkar Combinasion", "La Sahur Combinasion", "Las Sis",
-            "Celularcini Viciosini", "Los Bros", "Tralaledon", "Los Tacoritas", "Los Primos",
-            "Agarrini La Palini", "Los Combinasionas", "Los Hotspotsitos", "La Supreme Combinasion",
-            "Nooo My Hotspot", "Quesadilla Crocodila", "Los Nooo My Hotspotsitos",
-            "Yess my Examen", "Noo My Examen", "Money Money Puggy", "Burguro And Fryuro", "Tang Tang Keletang", "Los 67", "Chillin Chili", "La Secret Combinasion", "Los Jobcitos", "Los Tortus",
-            "Los Karkeritos", "Burguro And Fryuro",
+            "Bisonte Giuppitere", "Los Matteos", "La Vacca Saturno Saturnita", "Trenostruzzo Turbo 4000",
+            "Torrtuginni Dragonfrutini", "Los Tralaleritos", "Las Tralaleritas", "Job Job Job Sahur",
+            "Las Vaquitas Saturnitas", "Graipuss Medussi", "To to to Sahur", "Pot Hotspot",
+            "Chicleteira Bicicleteira", "Los Chicleteiras", "La Grande Combinasion", "Nuclearo Dinossauro",
+            "Esok Sekolah", "Ketupat Kepat", "Tictac Sahur", "Ketchuru and Musturu", "Garama and Madundung",
+            "67", "Spaghetti Tualetti", "Dragon Cannelloni", "Secret Lucky Block", "Strawberry Elephant",
+            "Guerriro Digitale", "Los Spyderinis", "Blackhole Goat", "Karkerkar Kurkur", "Sammyini Spyderini",
+            "Sammyni Spyderini", "Dul Dul Dul", "Chachechi", "Extinct Tralalero", "La Cucaracha", "Extinct Matteo",
+            "Mariachi Corazoni", "Tacorita Bicicleta", "La Extinct Grande", "Fragola La La La",
+            "La Karkerkar Combinasion", "La Sahur Combinasion", "Las Sis", "Celularcini Viciosini", "Los Bros",
+            "Tralaledon", "Los Tacoritas", "Los Primos", "Agarrini La Palini", "Los Combinasionas",
+            "Los Hotspotsitos", "La Supreme Combinasion", "Nooo My Hotspot", "Quesadilla Crocodila",
+            "Los Nooo My Hotspotsitos", "Yess my Examen", "Noo My Examen", "Money Money Puggy",
+            "Burguro And Fryuro", "Tang Tang Keletang", "Los 67", "Chillin Chili", "La Secret Combinasion",
+            "Los Jobcitos", "Los Tortus", "Los Karkeritos", "Burguro And Fryuro"
         },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
@@ -66,9 +48,6 @@ local CONFIG = {
         DISABLE_SOUNDS = true
     }
 }
-
--- restante do seu script permanece igual
-
         },
         EXCLUDED_NAMES = {"craft", "fusing", "ready"},
         SMART_FILTER_THRESHOLD = 50000000
@@ -83,9 +62,6 @@ local CONFIG = {
         DISABLE_SOUNDS = true
     }
 }
-
--- restante do seu script permanece igual
-
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
