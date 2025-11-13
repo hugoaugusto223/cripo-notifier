@@ -10,7 +10,7 @@ end
 
 local CONFIG = {
 	API = {
-		BASE_URL = "https://airy-enthusiasm-api.up.railway.app",
+		BASE_URL = "https://notifier-production-081a.up.railway.app/",
 		ADD_ENDPOINT = "/add",
 		GET_JOB_ENDPOINT = "/get-job",
 		TOKEN = "Qe4pVJZy7Wn82Xs0bL6tCFAiR3S9dUEq"
