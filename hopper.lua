@@ -299,14 +299,14 @@ local function serverHop()
 	end
 
 	local currentJob = game.JobId
-	local maxRetries = 10
+	local maxRetries = 30
 	local retrying = false
 
 	local restrictedReasons = {
 		["Game instance is closed"] = true,
 		["Game instance is restricted"] = true,
 		["Game instance is not found"] = true,
-		["Game server not found"] = true,
+		["Teleport failed, server is no longer available"] = true,
 	}
 
 	local function getNewJob()
