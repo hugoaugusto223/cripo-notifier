@@ -291,15 +291,21 @@ local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 
+-- 🔄 SERVER HOP (versão otimizada)
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
 local function serverHop()
-	local request = getHttpRequestFunction()
+	local request = http_request or request or (syn and syn.request)
 	if not request then
-		warn("Nenhum método HTTP compatível encontrado (Synapse, KRNL, etc.)")
+		warn("[ServerHop] Nenhum método HTTP suportado encontrado")
 		return
 	end
 
 	local currentJob = game.JobId
-	local maxRetries = 30
+	local maxRetries = 10
 	local retrying = false
 
 	local restrictedReasons = {
@@ -324,8 +330,10 @@ local function serverHop()
 					return HttpService:JSONDecode(res.Body)
 				end)
 
-				if success and data and data.job_id and typeof(data.job_id) == "string" then
-					if data.job_id ~= currentJob and (data.players or 0) <= 1 then
+				-- 🔍 apenas servidor diferente, vazio e válido
+				if success and data and typeof(data.job_id) == "string" then
+					local playersCount = tonumber(data.players or 0)
+					if data.job_id ~= currentJob and playersCount <= 1 then
 						return data.job_id
 					end
 				end
@@ -338,15 +346,15 @@ local function serverHop()
 	local function handleTeleportFail(_, _, reason)
 		retrying = true
 		if restrictedReasons[tostring(reason)] then
-			warn("[ServerHop] ignorando servidor  " .. tostring(reason))
+			warn("[ServerHop] servidor inválido (" .. tostring(reason) .. "), ignorando...")
 		else
-			warn("[ServerHop] falha ao teleportar " .. tostring(reason))
+			warn("[ServerHop] falha ao teleportar: " .. tostring(reason))
 		end
 	end
 
 	TeleportService.TeleportInitFailed:Connect(handleTeleportFail)
 
-	warn("[ServerHop] iniciando hop")
+	warn("[ServerHop] iniciando varredura de servidores...")
 
 	for attempt = 1, maxRetries do
 		retrying = false
@@ -358,13 +366,13 @@ local function serverHop()
 			continue
 		end
 
-		warn(string.format("[Tentativa %d/%d] tentando teleportar para %s", attempt, maxRetries, jobId))
+		warn(string.format("[Tentativa %d/%d] tentando entrar no servidor %s", attempt, maxRetries, jobId))
 		local success, err = pcall(function()
 			TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, Player)
 		end)
 
 		if not success then
-			warn("[Tentativa " .. attempt .. "] erro no teleport " .. tostring(err))
+			warn("[ServerHop] erro ao teleportar: " .. tostring(err))
 			task.wait(0.001)
 			continue
 		end
@@ -374,20 +382,17 @@ local function serverHop()
 			task.wait(0.001)
 			if retrying then break end
 			if game.JobId ~= currentJob then
-				warn("[ServerHop] teleport bem suceddisso")
+				warn("[ServerHop] teleporte concluido")
 				return
 			end
 		end
 
-		warn(string.format("[Tentativa %d/%d] servidor falhou...", attempt, maxRetries))
+		warn(string.format("[ServerHop] servidor falhou (%d/%d)", attempt, maxRetries))
 		task.wait(0.001)
 	end
 
-	warn("[ServerHop] n foi encontrado um servidor valido")
+	warn("[ServerHop] nenhum servidor valido encontrado " .. maxRetries .. " tentativas.")
 end
-
-
-
 
 
 local function main()
