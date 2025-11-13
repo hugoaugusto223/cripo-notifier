@@ -286,57 +286,106 @@ local function scanPlots()
 end
 
 
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
 local function serverHop()
-	local r = getHttpRequestFunction()
-	if not r then 
-		log("error", "nenhum http disponivel (executor incompatível)")
-		return 
+	local request = getHttpRequestFunction()
+	if not request then
+		warn("Nenhum método HTTP compatível encontrado (Synapse, KRNL, etc.)")
+		return
 	end
 
-	local maxRetries = 30
-	local retryDelay = 0.5
+	local currentJob = game.JobId
+	local maxRetries = 10
+	local retrying = false
 
-	for attempt = 1, maxRetries do
-		local success, res = pcall(function()
-			return r({
-				Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
-				Method = "GET",
-				Headers = { ["x-token"] = CONFIG.API.TOKEN }
-			})
-		end)
+	local restrictedReasons = {
+		["Game instance is closed"] = true,
+		["Game instance is restricted"] = true,
+		["Game instance is not found"] = true,
+		["Game server not found"] = true,
+	}
 
-		if success and res and res.Body then
-			local ok, data = pcall(function()
-				return HttpService:JSONDecode(res.Body)
+	local function getNewJob()
+		for i = 1, maxRetries do
+			local ok, res = pcall(function()
+				return request({
+					Url = CONFIG.API.BASE_URL .. CONFIG.API.GET_JOB_ENDPOINT,
+					Method = "GET",
+					Headers = { ["x-token"] = CONFIG.API.TOKEN }
+				})
 			end)
 
-			if ok and data and typeof(data.job_id) == "string" and #data.job_id > 10 then
-				local jobId = data.job_id
-				log("info", string.format("tentando teleportar (%d/%d): %s", attempt, maxRetries, jobId))
-
-				local tpSuccess, tpErr = pcall(function()
-					task.wait(1)
-					TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, Player)
+			if ok and res and res.StatusCode == 200 and res.Body then
+				local success, data = pcall(function()
+					return HttpService:JSONDecode(res.Body)
 				end)
 
-				if tpSuccess then
-					log("success", "teleportando para job " .. jobId)
-					return
-				else
-					log("warn", "falha no teleport (" .. tostring(tpErr) .. ") — tentando outro servidor...")
+				if success and data and data.job_id and typeof(data.job_id) == "string" then
+					if data.job_id ~= currentJob and (data.players or 0) <= 1 then
+						return data.job_id
+					end
 				end
-			else
-				log("error", "job invalid (tentativa " .. attempt .. ")")
 			end
-		else
-			log("error", "falha (tentativa " .. attempt .. ")")
+			task.wait(0.001)
 		end
-
-		task.wait(retryDelay)
+		return nil
 	end
 
-	log("error", "n foi possivel " .. maxRetries .. " tentativas.")
+	local function handleTeleportFail(_, _, reason)
+		retrying = true
+		if restrictedReasons[tostring(reason)] then
+			warn("[ServerHop] ignorando servidor  " .. tostring(reason))
+		else
+			warn("[ServerHop] falha ao teleportar " .. tostring(reason))
+		end
+	end
+
+	TeleportService.TeleportInitFailed:Connect(handleTeleportFail)
+
+	warn("[ServerHop] iniciando hop")
+
+	for attempt = 1, maxRetries do
+		retrying = false
+		local jobId = getNewJob()
+
+		if not jobId then
+			warn(string.format("[Tentativa %d/%d] nenhum servidor vazio encontrado.", attempt, maxRetries))
+			task.wait(0.001)
+			continue
+		end
+
+		warn(string.format("[Tentativa %d/%d] tentando teleportar para %s", attempt, maxRetries, jobId))
+		local success, err = pcall(function()
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, jobId, Player)
+		end)
+
+		if not success then
+			warn("[Tentativa " .. attempt .. "] erro no teleport " .. tostring(err))
+			task.wait(0.001)
+			continue
+		end
+
+		local start = tick()
+		while tick() - start < 1 do
+			task.wait(0.001)
+			if retrying then break end
+			if game.JobId ~= currentJob then
+				warn("[ServerHop] teleport bem suceddisso")
+				return
+			end
+		end
+
+		warn(string.format("[Tentativa %d/%d] servidor falhou...", attempt, maxRetries))
+		task.wait(0.001)
+	end
+
+	warn("[ServerHop] n foi encontrado um servidor valido")
 end
+
 
 
 
